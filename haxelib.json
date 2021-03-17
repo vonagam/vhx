@@ -1,0 +1,11 @@
+{
+  "name": "vhx",
+  "description": "Vonagam's haxe utils",
+  "version": "0.0.1",
+  "releasenote": "",
+  "url": "https://github.com/vonagam/vhx",
+  "license": "MIT",
+  "contributors": [ "vonagam" ],
+  "tags": [ "utility" ],
+  "classPath": "sources"
+}

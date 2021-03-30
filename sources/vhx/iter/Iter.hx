@@ -225,6 +225,38 @@ abstract Iter< T >( Iterable< T > ) from Iterable< T > to Iterable< T > {
 
   }
 
+  public static function findLast< T >( that: Iter< T >, predicate: Predicate< T > ): Nil< T > {
+
+    var result: Null< T > = null;
+
+    for ( value in that ) if ( predicate( value ) ) result = value;
+
+    return result;
+
+  }
+
+  public static function findIndex< T >( that: Iter< T >, predicate: Predicate< T > ): Int {
+
+    var index = 0;
+
+    for ( value in that ) { index++; if ( predicate( value ) ) return index; }
+
+    return -1;
+
+  }
+
+  public static function findLastIndex< T >( that: Iter< T >, predicate: Predicate< T > ): Int {
+
+    var index = 0;
+
+    var result = -1;
+
+    for ( value in that ) { index++; if ( predicate( value ) ) result = index; }
+
+    return result;
+
+  }
+
   public static function count< T >( that: Iter< T > ) {
 
     var counter = 0;

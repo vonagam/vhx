@@ -45,6 +45,12 @@ typedef DefinitionOptions = DocOptions & MetaOptions & ParamedOptions & {
 
   ?isExtern: Nil< Bool >,
 
+  ?pack: Nil< Array< String > >,
+
+  ?name: Nil< String >,
+
+  ?fields: Nil< Array< ToField > >,
+
 };
 
 typedef ClassKindOptions = {
@@ -63,6 +69,8 @@ typedef ClassOptions = DefinitionOptions & ClassKindOptions;
 
 typedef AbstractKindOptions = {
 
+  ?type: Nil< ToComplexType >,
+
   ?from: Nil< Array< ToComplexType > >,
 
   ?to: Nil< Array< ToComplexType > >,
@@ -70,6 +78,12 @@ typedef AbstractKindOptions = {
 };
 
 typedef AbstractOptions = DefinitionOptions & AbstractKindOptions;
+
+typedef AliasOptions = DefinitionOptions & {
+
+  type: ToComplexType,
+
+};
 
 
 class ExprTools {
@@ -575,19 +589,15 @@ class ExprTools {
   }
 
 
-  public static function definition( name: String, kind: TypeDefKind, ?fields: Array< ToField >, ?options: DefinitionOptions ) {
-
-    final fields = or( fields, [] );
+  public static function definition( kind: TypeDefKind, ?options: DefinitionOptions ) {
 
     final options = or( options, {} );
-
-    final pack = name.split( '.' );
 
     final definition: ToTypeDefinition = {
 
       pos: here,
 
-      pack: pack,
+      pack: options.pack.or( [] ),
 
       doc: options.doc,
 
@@ -597,11 +607,11 @@ class ExprTools {
 
       kind: kind,
 
-      name: pack.pop(),
+      name: options.name.or( '' ),
 
       params: options.params,
 
-      fields: fields,
+      fields: options.fields.or( [] ),
 
     };
 
@@ -615,9 +625,9 @@ class ExprTools {
 
   }
 
-  public static inline function dEnum( name: String, ?fields: Array< ToField >, ?options: DefinitionOptions ) {
+  public static inline function dEnum( ?options: DefinitionOptions ) {
 
-    return definition( name, tdEnum(), fields, options );
+    return definition( tdEnum(), options );
 
   }
 
@@ -627,9 +637,9 @@ class ExprTools {
 
   }
 
-  public static inline function dStructure( name: String, ?fields: Array< ToField >, ?options: DefinitionOptions ) {
+  public static inline function dStructure( ?options: DefinitionOptions ) {
 
-    return definition( name, tdStructure(), fields, options );
+    return definition( tdStructure(), options );
 
   }
 
@@ -639,9 +649,9 @@ class ExprTools {
 
   }
 
-  public static inline function dAlias( name: String, type: ToComplexType, ?options: DefinitionOptions ) {
+  public static inline function dAlias( options: AliasOptions ) {
 
-    return definition( name, tdAlias( type ), null, options );
+    return definition( tdAlias( options.type ), options );
 
   }
 
@@ -663,19 +673,19 @@ class ExprTools {
 
   }
 
-  public static inline function dClass( name: String, ?fields: Array< ToField >, ?options: ClassOptions ) {
+  public static inline function dClass( ?options: ClassOptions ) {
 
-    return definition( name, tdClass( options ), fields, options );
+    return definition( tdClass( options ), options );
 
   }
 
-  public static function tdAbstract( ?type: ToComplexType, ?options: AbstractKindOptions ) {
+  public static function tdAbstract( ?options: AbstractKindOptions ) {
 
     final options = or( options, {} );
 
     return TDAbstract(
 
-      type,
+      options.type,
 
       options.from,
 
@@ -685,9 +695,9 @@ class ExprTools {
 
   }
 
-  public static inline function dAbstract( name: String, ?type: ToComplexType, ?fields: Array< ToField >, ?options: AbstractOptions ) {
+  public static inline function dAbstract( ?options: AbstractOptions ) {
 
-    return definition( name, tdAbstract( type, options ), fields, options );
+    return definition( tdAbstract( options ), options );
 
   }
 
@@ -1037,7 +1047,7 @@ abstract ToFunctionArg( {
 
 typedef ToTypeDefinition = {
 
-  pack: Array<String>,
+  pack: Array< String >,
 
   name: String,
 

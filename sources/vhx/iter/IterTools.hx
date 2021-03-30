@@ -47,8 +47,8 @@ class IterTools {
     return new vhx.iter.impl.SupplyIterable( supplier );
 
 
-  public static inline function iterNext< T >( value: T, next: ( value: T ) -> T ): Iter< T >
+  public static inline function iterByOne< T >( value: Null< T >, next: ( value: T ) -> Null< T > ): Iter< T >
 
-    return new vhx.iter.impl.NextIterable( value, next );
+    return new vhx.iter.impl.ByOneIterable( value, next );
 
 }
